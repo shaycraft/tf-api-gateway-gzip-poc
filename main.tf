@@ -1,19 +1,40 @@
 resource "aws_api_gateway_rest_api" "rest-api" {
-  name = "Rest API for testing"
+  name                     = "Rest API for testing gzip"
+  minimum_compression_size = var.minimum_compression_length
   body = jsonencode({
     openapi = "3.0.1"
     info = {
-      title   = "example"
+      title   = "Rest API"
       version = "1.0"
     }
     paths = {
       "/foo" = {
         get = {
+          responses = {
+            "200" = {
+              "description" = "200 response"
+              "schema" = {
+                "$ref" = "#/definitions/Empty"
+              }
+            }
+          }
           x-amazon-apigateway-integration = {
             httpMethod           = "GET"
             payloadFormatVersion = "1.0"
-            type                 = "HTTP_PROXY"
+            type                 = "HTTP"
             uri                  = "https://reqres.in/api/users"
+            responses = {
+              default = {
+                statusCode = 200
+              }
+            }
+            "passthroughBehavior" = "when_no_match"
+          }
+        }
+        definitions = {
+          Empty = {
+            type  = "object"
+            title = "Empty Schema"
           }
         }
       }
