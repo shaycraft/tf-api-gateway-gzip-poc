@@ -9,11 +9,32 @@ resource "aws_api_gateway_rest_api" "rest-api" {
     paths = {
       "/foo" = {
         get = {
+          produces = ["application/json"]
+          responses = {
+            "200" = {
+              "description" = "200 response"
+              "schema" = {
+                "$ref" = "#/definitions/Empty"
+              }
+            }
+          }
           x-amazon-apigateway-integration = {
             httpMethod           = "GET"
             payloadFormatVersion = "1.0"
-            type                 = "HTTP_PROXY"
+            type                 = "HTTP"
             uri                  = "https://reqres.in/api/users"
+            responses = {
+              default = {
+                statusCode = 200
+              }
+            }
+            "passthroughBehavior" = "when_no_match"
+          }
+        }
+        definitions = {
+          Empty = {
+            type  = "object"
+            title = "Empty Schema"
           }
         }
       }
