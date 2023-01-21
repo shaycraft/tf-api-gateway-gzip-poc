@@ -1,15 +1,15 @@
 resource "aws_api_gateway_rest_api" "rest-api" {
-  name = "Rest API for testing"
+  name                     = "Rest API for testing gzip"
+  minimum_compression_size = var.minimum_compression_length
   body = jsonencode({
     openapi = "3.0.1"
     info = {
-      title   = "example"
+      title   = "Rest API"
       version = "1.0"
     }
     paths = {
       "/foo" = {
         get = {
-          produces = ["application/json"]
           responses = {
             "200" = {
               "description" = "200 response"
